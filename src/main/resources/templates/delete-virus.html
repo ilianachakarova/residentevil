@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/head"></th:block>
+
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="fragments/navbar"></th:block>
+    </header>
+    <div class="jumbotron re-background mt-4" ></div>
+    <h1>Confirm delete virus</h1>
+    <div class="form-group align-content-center">
+    <form th:action="@{/delete/{id}(id=${bindingModel.id})}" th:method="post" th:object="${bindingModel}">
+        <button  class="btn re-background"> Delete </button>
+        <a class="btn re-background" href="/viruses/show"> Back </a>
+    </form>
+    </div>
+</div>
+</body>
+
+</html>
