@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/head"></th:block>
+
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="fragments/navbar"></th:block>
+    </header>
+</div>
+<div class="jumbotron container mt-4 re-background text-white">
+    <form th:action="@{/register}" th:method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
+            <small id="usernameHelp" class="form-text text-muted">Username should be unique</small>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+        </div>
+        <div class="form-group">
+            <label for="username">Email</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+
+</body>
+</html>

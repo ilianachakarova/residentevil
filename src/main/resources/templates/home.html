@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/head"></th:block>
+
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="fragments/navbar"></th:block>
+    </header>
+    <main>
+        <div class="jumbotron re-background mt-4">
+            <h1 th:text="'Welcome ' + ${user} +'!'"></h1>
+            <hr/>
+            <p>Resident Evil is a system that registers virus spreads across the world.</p>
+        </div>
+        <div class="form-inline align-content-center">
+            <th:block th:if="${#strings.contains(role,'ADMIN')}">
+                <a th:href="@{/}" class="btn btn-secondary mr-4 re-background">Admin</a>
+            </th:block>
+            <form th:action="@{/logout}" th:method="post">
+                <button class="btn btn-secondary re-background">Logout</button>
+            </form>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

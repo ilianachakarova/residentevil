@@ -2,6 +2,7 @@ package softuni.residentevil.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class VirusController extends BaseController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize(value = "hasRole('ROLE_MODERATOR')")
     public ModelAndView add(ModelAndView modelAndView, @ModelAttribute(name = "bindingModel") VirusAddBindingModel virusAddBindingModel){
         modelAndView.addObject("bindingModel", virusAddBindingModel);
         modelAndView.addObject("capitals",this.capitalService.findAllCapitals().
@@ -44,6 +46,7 @@ public class VirusController extends BaseController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize(value = "hasRole('ROLE_MODERATOR')")
    public ModelAndView addConfirm(@Valid @ModelAttribute(name = "bindingModel")
                                               VirusAddBindingModel virusAddBindingModel, BindingResult bindingResult, ModelAndView modelAndView){
         if(bindingResult.hasErrors()){
