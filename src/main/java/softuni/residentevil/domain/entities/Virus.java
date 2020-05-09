@@ -115,7 +115,7 @@ public class Virus extends BaseEntity{
     public void setReleasedOn(LocalDate releasedOn) {
         this.releasedOn = releasedOn;
     }
-    @OneToMany(targetEntity = Capital.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Capital.class, fetch = FetchType.EAGER)
     @JoinTable(name = "virus_capital",
     joinColumns = @JoinColumn(name = "virus_id"),
             inverseJoinColumns = @JoinColumn(name = "capital_id")

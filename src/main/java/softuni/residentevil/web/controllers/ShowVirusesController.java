@@ -12,6 +12,7 @@ import softuni.residentevil.domain.models.view.VirusViewModel;
 import softuni.residentevil.service.CapitalService;
 import softuni.residentevil.service.VirusService;
 
+import java.security.Principal;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,7 +30,7 @@ public class ShowVirusesController extends BaseController {
     @GetMapping("/viruses/show")
     @PreAuthorize(value = "isAuthenticated()")
     public ModelAndView showViruses(ModelAndView modelAndView, @ModelAttribute(name = "viewModel") VirusViewModel virusViewModel,
-                                    @ModelAttribute(name = "capitalsModel") CapitalViewModel capitalViewModel) {
+                                    @ModelAttribute(name = "capitalsModel") CapitalViewModel capitalViewModel, Principal principal) {
         modelAndView.addObject("viewModel", virusViewModel);
         modelAndView.addObject("viruses",
                 this.virusService.findAllViruses().stream().map
@@ -42,6 +43,7 @@ public class ShowVirusesController extends BaseController {
         modelAndView.addObject("capitals",
                 this.capitalService.findAllCapitals().stream()
         .map(c->this.modelMapper.map(c,CapitalViewModel.class)).collect(Collectors.toList()));
+        modelAndView.addObject("user",principal.getName());
         return super.view("show-viruses",modelAndView);
     }
 }

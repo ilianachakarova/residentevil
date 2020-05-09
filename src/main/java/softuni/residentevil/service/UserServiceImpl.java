@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softuni.residentevil.domain.entities.Role;
 import softuni.residentevil.domain.entities.User;
+import softuni.residentevil.domain.models.binding.EditUserBindingModel;
 import softuni.residentevil.domain.models.service.UserServiceModel;
 import softuni.residentevil.domain.models.view.UserViewModel;
 import softuni.residentevil.repository.RoleRepository;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
     @Transactional
     @Override
     public boolean registerUser(UserServiceModel userServiceModel) {
@@ -39,10 +41,10 @@ public class UserServiceImpl implements UserService {
         User user = this.modelMapper.map(userServiceModel, User.class);
         user.setPassword(this.bCryptPasswordEncoder.encode(userServiceModel.getPassword()));
         this.giveRolesToUser(user);
-        try{
+        try {
             this.userRepository.saveAndFlush(user);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -50,10 +52,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserViewModel> findAllUsers() {
-        List<User>usersEntities = this.userRepository.findAll();
+        List<User> usersEntities = this.userRepository.findAll();
         List<UserViewModel> userViewModels = new ArrayList<>();
         for (User usersEntity : usersEntities) {
-            UserViewModel userViewModel = this.modelMapper.map(usersEntity,UserViewModel.class);
+            UserViewModel userViewModel = this.modelMapper.map(usersEntity, UserViewModel.class);
             userViewModel.setRoles(usersEntity.getAuthorities()
                     .stream().map(Role::getAuthority).collect(Collectors.joining(", ")));
             userViewModels.add(userViewModel);
@@ -62,12 +64,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return this.userRepository.findByUsername(s).orElseThrow(()->new UsernameNotFoundException("Username not found"));
+    public UserViewModel findUserById(String id) {
+
+        User entity = this.userRepository.findById(id).orElse(null);
+        if (entity != null) {
+
+            UserViewModel userViewModel =
+                    this.modelMapper.map(entity, UserViewModel.class);
+            userViewModel.setRoles(entity.getAuthorities().stream().map(Role::getAuthority).collect(Collectors.joining(", ")));
+            return userViewModel;
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+
     }
 
-    private void seedRolesInDb(){
-        if(this.roleRepository.count()==0){
+    @Override
+    public void editUserRole(EditUserBindingModel editUserBindingModel) {
+        User entity = this.userRepository.findById(editUserBindingModel.getId()).orElse(null);
+        if(entity!=null){
+            Role role = this.roleRepository.findByAuthority(editUserBindingModel.getRole());
+            entity.getAuthorities().add(role);
+            this.userRepository.save(entity);
+        }else {
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        return this.userRepository.findByUsername(s).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+    }
+
+    private void seedRolesInDb() {
+        if (this.roleRepository.count() == 0) {
             Role admin = new Role();
             admin.setAuthority("ROLE_ADMIN");
 
@@ -84,12 +114,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void giveRolesToUser(User user){
-        if(this.userRepository.count() == 0){
+    private void giveRolesToUser(User user) {
+        if (this.userRepository.count() == 0) {
             user.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_ADMIN"));
             user.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_MODERATOR"));
             user.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_USER"));
-        }else {
+        } else {
             user.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_USER"));
         }
     }

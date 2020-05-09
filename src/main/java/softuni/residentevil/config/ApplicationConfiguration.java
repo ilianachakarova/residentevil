@@ -1,5 +1,6 @@
 package softuni.residentevil.config;
 
+import com.google.gson.Gson;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,5 +15,10 @@ public class ApplicationConfiguration {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public Gson gson(){
+        return new Gson().newBuilder().create();
     }
 }

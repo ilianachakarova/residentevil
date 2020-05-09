@@ -13,10 +13,8 @@
 <main>
     <div class="container">
         <div>
-            <h2>Users</h2>
-        </div>
-
-
+            <h2>Change User Role</h2>
+            <form th:action="@{/users/edit/{id}(id=${user.id})}" th:method="post" th:object="${editModel}">
             <table class="table">
                 <thead>
                 <tr>
@@ -29,43 +27,27 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user, userStat: ${users}">
-                    <th scope="row" th:text="${userStat.index+1}"></th>
+                <tr>
+                    <th scope="row"></th>
                     <td th:text="${user.username}"></td>
                     <td th:text="${user.email}"></td>
-                    <td th:text="${user.roles}"></td>
-                    <th:block th:unless="${#strings.contains(user.roles, 'ROOT_ADMIN')}">
-                        <td><a class="btn re-background"  th:href="@{/users/edit/{id}(id=${user.id})}" role="button">Edit</a></td>
-                    </th:block>
+                    <td>
+                        <th:block th:field="*{role}" id="role">
+                            <div  class="radio" th:each="role: ${roles}">
+                                <label><input type="radio" th:value="${role}" th:name="role" th:text="${role}"></label>
+                            </div>
+                        </th:block>
+
+                    </td>
 
                 </tr>
                 </tbody>
             </table>
-
+                <button class="btn re-background">EDIT</button>
+            </form>
         </div>
 
-        <div class="collapse" id="capitalTable">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Latitude</th>
-                    <th scope="col">Longitude</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="capital, capitalStat: ${capitals}">
-                    <th scope="row" th:text="${capitalStat.index+1}"></th>
-                    <td th:text="${capital.name}"></td>
-                    <td th:text="${capital.latitude}"></td>
-                    <td th:text="${capital.longitude}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-
+    </div>
 </main>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

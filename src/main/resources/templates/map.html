@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/head"></th:block>
+
+
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <th:block th:include="fragments/navbar"></th:block>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+              integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+              crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+                integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+                crossorigin=""></script>
+        <style>
+            #map{
+                height: 600px;
+            }
+        </style>
+    </header>
+    <main>
+        <div id="map">
+
+        </div>
+        <script>
+            var map = L.map('map').setView([0, 0],2);
+
+            var tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+           var attribution =
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+          var tiles = L.tileLayer(tileUrl,attribution);
+          tiles.addTo(map);
+
+
+        var data = [[${coordinates}]];
+            for (i = 0; i < data.length; i+=2) {
+                var marker = L.marker([0,0]).addTo(map);
+                marker.setLatLng([data[i],data[i+1]]);
+            }
+
+        </script>
+    </main>
+</div>
+</body>
+</html>

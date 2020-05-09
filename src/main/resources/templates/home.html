@@ -17,7 +17,7 @@
         </div>
         <div class="form-inline align-content-center">
             <th:block th:if="${#strings.contains(role,'ADMIN')}">
-                <a th:href="@{/}" class="btn btn-secondary mr-4 re-background">Admin</a>
+                <a th:href="@{/admin/users}" class="btn btn-secondary mr-4 re-background">Admin</a>
             </th:block>
             <form th:action="@{/logout}" th:method="post">
                 <button class="btn btn-secondary re-background">Logout</button>

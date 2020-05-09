@@ -68,5 +68,6 @@ public class VirusController extends BaseController {
                 .collect(Collectors.toList());
 
         virusServiceModel.setCapitals(capitalServiceModels);
+        System.out.println();
     }
 }

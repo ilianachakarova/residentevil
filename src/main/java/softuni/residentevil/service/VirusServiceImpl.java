@@ -1,5 +1,6 @@
 package softuni.residentevil.service;
 
+import com.google.gson.Gson;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,10 @@ import softuni.residentevil.domain.entities.Virus;
 import softuni.residentevil.domain.models.binding.VirusAddBindingModel;
 import softuni.residentevil.domain.models.service.CapitalServiceModel;
 import softuni.residentevil.domain.models.service.VirusServiceModel;
+import softuni.residentevil.repository.CapitalRepository;
 import softuni.residentevil.repository.VirusRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +22,16 @@ import java.util.stream.Collectors;
 public class VirusServiceImpl implements VirusService{
     private final ModelMapper modelMapper;
     private final VirusRepository virusRepository;
+    private final CapitalRepository capitalRepository;
     private final CapitalService capitalService;
+    private final Gson gson;
     @Autowired
-    public VirusServiceImpl(ModelMapper modelMapper, VirusRepository virusRepository, CapitalService capitalService) {
+    public VirusServiceImpl(ModelMapper modelMapper, VirusRepository virusRepository, CapitalRepository capitalRepository, CapitalService capitalService, Gson gson) {
         this.modelMapper = modelMapper;
         this.virusRepository = virusRepository;
+        this.capitalRepository = capitalRepository;
         this.capitalService = capitalService;
+        this.gson = gson;
     }
     @Transactional
     @Override
@@ -32,7 +39,9 @@ public class VirusServiceImpl implements VirusService{
         Virus virus = this.modelMapper.map(virusServiceModel,Virus.class);
         List<Capital> capitalsList = virusServiceModel.getCapitals().stream().map(c->this.modelMapper.map(c,Capital.class))
                 .collect(Collectors.toList());
+
         virus.setCapitals(capitalsList);
+
         this.virusRepository.saveAndFlush(virus);
     }
 
@@ -66,5 +75,20 @@ public class VirusServiceImpl implements VirusService{
     @Override
     public void deleteVirus(VirusServiceModel virusServiceModel) {
         this.virusRepository.delete(this.modelMapper.map(virusServiceModel,Virus.class));
+    }
+
+    @Override
+    public ArrayList<Double> extractVirusesAsList() {
+        List<Virus> virusList = this.virusRepository.findAll();
+        ArrayList<Double>result = new ArrayList<>();
+        List<Capital>capitals = new ArrayList<>();
+        virusList.forEach(virus -> {
+            capitals.addAll(virus.getCapitals());
+        });
+        capitals.forEach(c->{
+            result.add(c.getLatitude());
+            result.add(c.getLongitude());
+        });
+        return result;
     }
 }
